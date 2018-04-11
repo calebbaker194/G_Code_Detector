@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
@@ -40,7 +42,7 @@ import gfields.GField;
 import gfields.GFields;
 import gfields.GLookAheadField;
 
-public class Main extends JFrame{
+public class Main extends JFrame implements Runnable{
 	public static void main(String[] args) {
 		new Main();
 	}
@@ -192,10 +194,12 @@ public class Main extends JFrame{
 		check.setPreferredSize(new Dimension(200,28));
 		check.setBackground(Color.BLUE);
 		check.setForeground(Color.WHITE);
+		Main self = this;
 		check.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				checkFile();
+				Thread t = new Thread(self);
+				t.start();
 				
 			}
 		});
@@ -243,21 +247,34 @@ public class Main extends JFrame{
 		
 	}
 	private void checkFile() {
+		
+	}
+	@Override
+	public void run() 
+	{
+		long time = System.currentTimeMillis();
 		System.out.println(readout.getSize());
 		
 		File GCode = new File(path.getText());
 		GCodeString="";
 		String LookAhead="";
 		Scanner GCodeScanner = null;	
+		System.out.println("File Creation: "+(time-System.currentTimeMillis())+"ms");
+		time = System.currentTimeMillis();
 		try
 		{			
 			GCodeScanner= new Scanner(GCode);
 			initGFileds();
-			while(GCodeScanner.hasNextLine())
-			{
-				
-				LookAhead +=GCodeScanner.nextLine()+"\n";
+			System.out.println("Scanner Creation: "+(time-System.currentTimeMillis())+"ms");
+			time = System.currentTimeMillis();
+			try {
+				LookAhead = new String(Files.readAllBytes(Paths.get(path.getText())));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			System.out.println("Look Ahead Creation: "+(time-System.currentTimeMillis())+"ms");
+			
 			
 			GCodeScanner.close();
 			GCodeScanner= new Scanner(GCode);
@@ -266,18 +283,31 @@ public class Main extends JFrame{
 			e.printStackTrace();
 			//TODO: an accurate error report
 		}
-		
+			
 		if(GCodeScanner != null)
 		{
 			String GCodeLine;
+			time = System.currentTimeMillis();
 			while(GCodeScanner.hasNextLine())
 			{	
+				
 				GCodeLine = GCodeScanner.nextLine();
 				LookAhead=LookAhead.substring(LookAhead.indexOf(GCodeLine)+GCodeLine.length());
-				GCodeLine = gscanner.check(GCodeLine,LookAhead);
+				gscanner.prepair(GCodeLine, LookAhead);
+				Thread t = new Thread(gscanner);
+				t.start();
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				GCodeLine = gscanner.getRetStr(); 
 				GCodeString += GCodeLine+"\n";
+				
 			}
 			gscanner.setLineNumber(0);
+			System.out.println("Line Trace Total: "+(time-System.currentTimeMillis())+"ms");
 			GCodeScanner.close();
 		}
 		

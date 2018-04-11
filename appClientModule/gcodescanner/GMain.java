@@ -13,12 +13,15 @@ import javax.swing.text.StyleContext;
 import gfields.GField;
 import gfields.GFields;
 
-public class GMain {
+public class GMain implements Runnable{
 	
 	private Stack<GFields> modifications = new Stack<GFields>();
 	private int lineNumber=0;
 	private JTextPane console;
 	private boolean error = false;
+	private String s;
+	private String lookAhead;
+	private String retStr;
 	public static void appendToPane(JTextPane tp, String msg, Color c)
     {
         StyleContext sc = StyleContext.getDefaultStyleContext();
@@ -41,33 +44,6 @@ public class GMain {
 	{
 		modifications.push(t);
 	}
-	public String check(String s,String lookAhead)
-	{
-		lineNumber++;
-		String temp="";
-		for(GFields g : modifications)
-		{
-			temp=g.replace(s,lookAhead);
-			if(temp != s)
-			{
-				if(!g.isRepeating())
-					modifications.remove(g);
-				
-				if(g.hasMessage())
-				{
-					appendToPane(console,lineNumber+": "+g.getMessage()+"\n",Color.BLACK);
-				}
-				if(g.hasError())
-				{
-					appendToPane(console,lineNumber+": "+g.getError()+"\n",Color.RED);
-						if(g.getError().contains("FATAL"))
-							setError(true);
-				}
-				return temp;
-			}
-		}
-		return s;
-	}
 	public void setLineNumber(int l)
 	{
 		lineNumber = l;
@@ -85,5 +61,54 @@ public class GMain {
 
 	public void setError(boolean error) {
 		this.error = error;
+	}
+
+	public void prepair(String se,String la)
+	{
+		s = se;
+		lookAhead = la;
+	}
+	@Override
+	public void run() {
+		lineNumber++;
+		String temp="";
+		for(GFields g : modifications)
+		{
+			g.prepair(s, lookAhead);
+			Thread t = new Thread(g);
+			t.start();	
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			temp=g.getStrReturn();
+			if(temp != s)
+			{
+				if(!g.isRepeating())
+					modifications.remove(g);
+				
+				if(g.hasMessage())
+				{
+					appendToPane(console,lineNumber+": "+g.getMessage()+"\n",Color.BLACK);
+				}
+				if(g.hasError())
+				{
+					appendToPane(console,lineNumber+": "+g.getError()+"\n",Color.RED);
+						if(g.getError().contains("FATAL"))
+							setError(true);
+				}
+				retStr = temp;
+				return;
+			}
+		}
+		retStr = s;
+		return;
+		
+	}
+
+	public String getRetStr() {
+		return retStr;
 	}
 }
