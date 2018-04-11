@@ -85,7 +85,7 @@ public class Main extends JFrame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		setIconImage(new ImageIcon("appClientModule\\images\\g.png").getImage().getScaledInstance(250, 250, 250));
+		setIconImage(new ImageIcon("appClientModule\\images\\g.png").getImage());
 		
 		initGUI();		
 		setSize(getWidth()+1, getHeight());
