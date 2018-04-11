@@ -26,8 +26,9 @@ public class GLookAheadField extends GFields{
 		setOffset(length);
 		setName(n);
 	}
-	public void run()
-	{
+	
+	@Override
+	public String replace(String code, String lookahead) {
 		Matcher m = sequence.matcher(code);
 		Pattern p = Pattern.compile(replace);
 		Matcher la = p.matcher(lookahead);
@@ -36,16 +37,15 @@ public class GLookAheadField extends GFields{
 			if(la.find())
 			{
 				setMessage("inserted "+ lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset));
-				strReturn = code+="\n"+lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset);
-				return;
+				return code+="\n"+lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset);
+				
 			}
 			else
 			{
 				setMessage("No More "+replace+" to insert");
 			}
 		}
-		strReturn = code;
-		return;
+		return code;
 	}
 	
 	

@@ -1,7 +1,6 @@
 package gfields;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GField extends GFields{
 	public GField(String s,String r)
@@ -16,16 +15,14 @@ public class GField extends GFields{
 		setName(n);
 	}
 	
-	@Override
-	public void run()
+	
+	public String replace(String code,String lookahead)
 	{
 		Matcher m = sequence.matcher(code);
 		if(m.find())
 		{			
-			strReturn = code.replaceFirst(m.group(0), replace);
-			return;
+			return code.replaceFirst(m.group(0), replace);
 		}
-		strReturn = code;
-		return;
+		return code;
 	}
 }
