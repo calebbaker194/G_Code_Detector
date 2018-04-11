@@ -16,15 +16,15 @@ public class GErrorField extends GFields {
 		setName(n);
 	}
 	
-	public void run()
-	{
+	@Override
+	public String replace(String code, String lookahead) {
+		
 		if(code.matches(".*"+sequence.pattern().substring(0,offset)+".*") ^ code.matches(".*"+sequence.pattern().substring(offset)+".*"))
 		{
 			error = "FATAL: "+message+" "+code;
-			strReturn = code+"!";
-			return;
+			return code+"!";
+			
 		}
-		strReturn = code;
-		return;
+		return code;
 	}	
 }

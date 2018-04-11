@@ -3,14 +3,12 @@ package gcodescanner;
 import java.awt.Color;
 import java.util.Stack;
 
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import gfields.GField;
 import gfields.GFields;
 
 public class GMain implements Runnable{
@@ -74,16 +72,7 @@ public class GMain implements Runnable{
 		String temp="";
 		for(GFields g : modifications)
 		{
-			g.prepair(s, lookAhead);
-			Thread t = new Thread(g);
-			t.start();	
-			try {
-				t.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			temp=g.getStrReturn();
+			temp=g.replace(s, lookAhead);
 			if(temp != s)
 			{
 				if(!g.isRepeating())

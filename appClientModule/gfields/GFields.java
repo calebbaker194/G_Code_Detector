@@ -2,7 +2,7 @@ package gfields;
 
 import java.util.regex.Pattern;
 
-public abstract class GFields implements Runnable{
+public abstract class GFields{
 	protected String name;
 	protected Pattern sequence;
 	protected String replace;
@@ -10,21 +10,9 @@ public abstract class GFields implements Runnable{
 	protected String error;
 	protected String message;
 	protected boolean repeating = true;
-	protected String code;
-	protected String lookahead;
-	protected String strReturn;
-	//public abstract String replace(String code,String lookahead);
-	public void prepair(String c,String la)
-	{
-		code = c;
-		lookahead = la;
-	}
-
 	
-	public String getStrReturn()
-	{
-		return strReturn;
-	}
+	public abstract String replace(String code,String lookahead);
+
 	public String getSequence() {
 		return sequence.pattern();
 	}
