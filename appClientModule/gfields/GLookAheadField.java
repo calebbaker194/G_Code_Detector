@@ -26,24 +26,26 @@ public class GLookAheadField extends GFields{
 		setOffset(length);
 		setName(n);
 	}
-	public String replace(String code,String file)
+	public void run()
 	{
 		Matcher m = sequence.matcher(code);
 		Pattern p = Pattern.compile(replace);
-		Matcher la = p.matcher(file);
+		Matcher la = p.matcher(lookahead);
 		if(m.find())
 		{
 			if(la.find())
 			{
-				setMessage("inserted "+ file.substring(file.indexOf(la.group(0)),file.indexOf(la.group(0))+offset));
-				return code+="\n"+file.substring(file.indexOf(la.group(0)),file.indexOf(la.group(0))+offset);
+				setMessage("inserted "+ lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset));
+				strReturn = code+="\n"+lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset);
+				return;
 			}
 			else
 			{
 				setMessage("No More "+replace+" to insert");
 			}
 		}
-		return code;
+		strReturn = code;
+		return;
 	}
 	
 	

@@ -16,13 +16,16 @@ public class GField extends GFields{
 		setName(n);
 	}
 	
-	public String replace(String code,String lookahead)
+	@Override
+	public void run()
 	{
 		Matcher m = sequence.matcher(code);
 		if(m.find())
 		{			
-			return code.replaceFirst(m.group(0), replace);
+			strReturn = code.replaceFirst(m.group(0), replace);
+			return;
 		}
-		return code;
+		strReturn = code;
+		return;
 	}
 }
