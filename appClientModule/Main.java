@@ -283,16 +283,7 @@ public class Main extends JFrame implements Runnable{
 				
 				GCodeLine = GCodeScanner.nextLine();
 				LookAhead=LookAhead.substring(LookAhead.indexOf(GCodeLine)+GCodeLine.length());
-				gscanner.prepair(GCodeLine, LookAhead);
-				Thread t = new Thread(gscanner);
-				t.start();
-				try {
-					t.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				GCodeLine = gscanner.getRetStr(); 
+				GCodeLine = gscanner.checkLine(GCodeLine, LookAhead); 
 				GCodeString += GCodeLine+"\n";
 				
 			}
