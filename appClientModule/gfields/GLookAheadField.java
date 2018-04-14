@@ -36,8 +36,8 @@ public class GLookAheadField extends GFields{
 		{
 			if(la.find())
 			{
-				setMessage("inserted "+ lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset));
-				return code+="\n"+lookahead.substring(lookahead.indexOf(la.group(0)),lookahead.indexOf(la.group(0))+offset);
+				setMessage("inserted "+ la.group(0));
+				return code+="\n"+la.group(0);
 				
 			}
 			else
