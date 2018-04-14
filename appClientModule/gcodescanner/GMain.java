@@ -11,15 +11,12 @@ import javax.swing.text.StyleContext;
 
 import gfields.GFields;
 
-public class GMain implements Runnable{
+public class GMain{
 	
 	private Stack<GFields> modifications = new Stack<GFields>();
 	private int lineNumber=0;
 	private JTextPane console;
 	private boolean error = false;
-	private String s;
-	private String lookAhead;
-	private String retStr;
 	public static void appendToPane(JTextPane tp, String msg, Color c)
     {
         StyleContext sc = StyleContext.getDefaultStyleContext();
@@ -61,13 +58,8 @@ public class GMain implements Runnable{
 		this.error = error;
 	}
 
-	public void prepair(String se,String la)
-	{
-		s = se;
-		lookAhead = la;
-	}
-	@Override
-	public void run() {
+	public String checkLine(String s, String lookAhead) {
+		
 		lineNumber++;
 		String temp="";
 		for(GFields g : modifications)
@@ -88,16 +80,9 @@ public class GMain implements Runnable{
 						if(g.getError().contains("FATAL"))
 							setError(true);
 				}
-				retStr = temp;
-				return;
-			}
+				return temp;
+			} 
 		}
-		retStr = s;
-		return;
-		
-	}
-
-	public String getRetStr() {
-		return retStr;
+		return s;
 	}
 }
