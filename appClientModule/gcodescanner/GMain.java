@@ -62,8 +62,10 @@ public class GMain{
 		
 		lineNumber++;
 		String temp="";
+		
 		for(GFields g : modifications)
 		{
+			
 			temp=g.replace(s, lookAhead);
 			if(temp != s)
 			{
@@ -80,8 +82,9 @@ public class GMain{
 						if(g.getError().contains("FATAL"))
 							setError(true);
 				}
-				return temp;
+				return temp;	
 			} 
+
 		}
 		return s;
 	}

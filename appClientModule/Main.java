@@ -25,6 +25,7 @@ import javax.swing.SwingConstants;
 import gcodescanner.GMain;
 import gfields.GErrorField;
 import gfields.GField;
+import gfields.GFieldLineReplacer;
 import gfields.GFields;
 import gfields.GLookAheadField;
 
@@ -90,9 +91,10 @@ public class Main extends JFrame implements Runnable{
 		GFields t;
 		if(programNumberF.getText().length()>0)
 		{
-			t = new GField(":\\d*",":"+programNumberF.getText());
+			t = new GFieldLineReplacer(":",":"+programNumberF.getText());
 			t.setRepeating(false);
 			t.setMessage("Programm Number Changed To: "+programNumberF.getText());
+			t.setName("Program Number");
 			gscanner.add(t);
 		}
 		if(G55F.getText().length()>0)
@@ -100,14 +102,16 @@ public class Main extends JFrame implements Runnable{
 			t = new GField("(G5[4-9]|G99)",G55F.getText());
 			t.setRepeating(false);
 			t.setMessage("Cordanite System Changed To: "+ G55F.getText());
+			t.setName("Coord");
 			gscanner.add(t);
 		}
 		
 		t = new GLookAheadField("T\\d*M[0-9]", "T\\d*" , 2);
 		t.setMessage(" Added Field at the line number");
+		t.setName("T5M6");
 		gscanner.add(t);
 		
-		gscanner.add(new GErrorField("(I-?\\d.*\\.\\d{4})(J-?\\d.*\\.\\d{4})"," I without J or J without I",16) );
+		gscanner.add(new GErrorField("(I-?\\d*\\.\\d{4})(J-?\\d*\\.\\d{4})"," I without J or J without I",15) );
 	}
 
 	private void initGUI() {
@@ -242,29 +246,24 @@ public class Main extends JFrame implements Runnable{
 	@Override
 	public void run() 
 	{
-		long time = System.currentTimeMillis();
 		System.out.println(readout.getSize());
 		
 		File GCode = new File(path.getText());
 		GCodeString="";
 		String LookAhead="";
 		Scanner GCodeScanner = null;	
-		System.out.println("File Creation: "+(time-System.currentTimeMillis())+"ms");
-		time = System.currentTimeMillis();
+		
 		try
 		{			
 			GCodeScanner= new Scanner(GCode);
 			initGFileds();
-			System.out.println("Scanner Creation: "+(time-System.currentTimeMillis())+"ms");
-			time = System.currentTimeMillis();
+
 			try {
 				LookAhead = new String(Files.readAllBytes(Paths.get(path.getText())));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("Look Ahead Creation: "+(time-System.currentTimeMillis())+"ms");
-			
 			
 			GCodeScanner.close();
 			GCodeScanner= new Scanner(GCode);
@@ -274,10 +273,10 @@ public class Main extends JFrame implements Runnable{
 			//TODO: an accurate error report
 		}
 			
+		
 		if(GCodeScanner != null)
 		{
 			String GCodeLine;
-			time = System.currentTimeMillis();
 			while(GCodeScanner.hasNextLine())
 			{	
 				
@@ -288,7 +287,6 @@ public class Main extends JFrame implements Runnable{
 				
 			}
 			gscanner.setLineNumber(0);
-			System.out.println("Line Trace Total: "+(time-System.currentTimeMillis())+"ms");
 			GCodeScanner.close();
 		}
 		

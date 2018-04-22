@@ -1,23 +1,26 @@
 package gfields;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class GFields{
 	protected String name;
-	protected Pattern sequence;
+	protected Pattern sequence[] = new Pattern[10];
+	protected Matcher m[] = new Matcher[10];
 	protected String replace;
 	protected int offset;
 	protected String error;
 	protected String message;
+	public String debug="";
 	protected boolean repeating = true;
 	
 	public abstract String replace(String code,String lookahead);
 
-	public String getSequence() {
-		return sequence.pattern();
+	public String getSequence(int x) {
+		return sequence[x].pattern();
 	}
-	public void setSequence(String sequence) {
-		this.sequence = Pattern.compile(sequence);
+	public void setSequence(String sequence , int x) {
+		this.sequence[x] = Pattern.compile(sequence);
 	}
 	public int getOffset() {
 		return offset;

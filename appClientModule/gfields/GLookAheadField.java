@@ -1,27 +1,28 @@
 package gfields;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class GLookAheadField extends GFields{
 	// S = Sequence = TxMx
 	// R = replace = Tx
 	public GLookAheadField(String s, String lookForSequence){
-		setSequence(s);
+		setSequence(lookForSequence,1);
+		setSequence(s,0);
 		setReplace(lookForSequence);
 	}
 	public GLookAheadField(String s, String lookForSequence, String n) {
-		setSequence(s);
+		setSequence(lookForSequence,1);
+		setSequence(s,0);
 		setReplace(lookForSequence);
 		setName(n);
 	}
 	public GLookAheadField(String s, String lookForSequence, int length){
-		setSequence(s);
+		setSequence(lookForSequence,1);
+		setSequence(s,0);
 		setReplace(lookForSequence);
 		setOffset(length);
 	}
 	public GLookAheadField(String s, String lookForSequence, String n, int length){
-		setSequence(s);
+		setSequence(lookForSequence,1);
+		setSequence(s,0);
 		setReplace(lookForSequence);
 		setOffset(length);
 		setName(n);
@@ -29,15 +30,14 @@ public class GLookAheadField extends GFields{
 	
 	@Override
 	public String replace(String code, String lookahead) {
-		Matcher m = sequence.matcher(code);
-		Pattern p = Pattern.compile(replace);
-		Matcher la = p.matcher(lookahead);
-		if(m.find())
+		m[0] = sequence[0].matcher(code);
+		m[1] = sequence[1].matcher(lookahead);
+		if(m[0].find())
 		{
-			if(la.find())
+			if(m[1].find())
 			{
-				setMessage("inserted "+ la.group(0));
-				return code+="\n"+la.group(0);
+				setMessage("inserted "+ m[1].group(0));
+				return code+="\n"+m[1].group(0);
 				
 			}
 			else
